@@ -5,11 +5,15 @@ NB sentiment analyser.
 Start code.
 """
 import argparse
+from data_preprocessor import DataPreprocessor
+from naive_bayes import NaiveBayes
+from feature_selection import FeatureSelection
+from evaluate import Evaluate
 
 """
 IMPORTANT, modify this part with your details
 """
-USER_ID = "acpXXjd" #your unique student ID, i.e. the IDs starting with "acp", "mm" etc that you use to login into MUSE 
+USER_ID = "aca21mtk" #your unique student ID, i.e. the IDs starting with "acp", "mm" etc that you use to login into MUSE 
 
 def parse_args():
     parser=argparse.ArgumentParser(description="A Naive Bayes Sentiment Analyser for the Rotten Tomatoes Movie Reviews dataset")
@@ -50,9 +54,35 @@ def main():
     ADD YOUR CODE HERE
     Create functions and classes, using the best practices of Software Engineering
     """
+    training_ids, training_data, training_labels = DataPreprocessor(number_classes).load_and_preprocess_data(training)
+    # if features == 'features':
+    #     training_data = FeatureSelection(training_data).processed_data_with_features
+    nb = NaiveBayes()
+    nb.train(training_data, training_labels)
+    
+    dev_ids, dev_data, dev_labels = DataPreprocessor(number_classes).load_and_preprocess_data(dev)
+    # if features == 'features':
+    #     dev_data = FeatureSelection(dev_data).processed_data_with_features
+    dev_predicted_labels = []
+    for sentence in dev_data:
+        dev_predicted_labels.append(nb.predict_sentiment(sentence))
+    
+    test_ids, test_data, test_labels = DataPreprocessor(number_classes).load_and_preprocess_data(test)
+    # if features == 'features':
+    #     test_data = FeatureSelection(test_data).processed_data_with_features
+    test_predicted_labels = []
+    for sentence in test_data:
+        test_predicted_labels.append(nb.predict_sentiment(sentence))
+        
+    if output_files:
+        Evaluate(number_classes, confusion_matrix, USER_ID).save_predictions(dev_ids, dev_predicted_labels, 'dev')
+        Evaluate(number_classes, confusion_matrix, USER_ID).save_predictions(test_ids, test_predicted_labels, 'test')
+        
+    
+    f1_score = Evaluate(number_classes, confusion_matrix, USER_ID).evaluate_performance(dev_predicted_labels, dev_labels)
     
     #You need to change this in order to return your macro-F1 score for the dev set
-    f1_score = 0
+    # f1_score = 0
     
 
     """
