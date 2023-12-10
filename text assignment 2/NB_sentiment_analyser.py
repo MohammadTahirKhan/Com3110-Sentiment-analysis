@@ -9,6 +9,7 @@ from data_preprocessor import DataPreprocessor
 from naive_bayes import NaiveBayes
 from feature_processing import FeatureProcesser
 from evaluate import Evaluate
+from save_output import SaveOutput
 
 """
 IMPORTANT, modify this part with your details
@@ -64,22 +65,23 @@ def main():
     if features == 'features':
         dev_data = FeatureProcesser(dev_data).process_data_with_features()
     dev_predicted_labels = []
-    for sentence in dev_data:
-        dev_predicted_labels.append(nb.predict_sentiment(sentence))
+    for phrase in dev_data:
+        dev_predicted_labels.append(nb.predict_sentiment(phrase))
     
     test_ids, test_data, test_labels = DataPreprocessor(number_classes).load_and_preprocess(test)
     if features == 'features':
         test_data = FeatureProcesser(test_data).process_data_with_features()
     test_predicted_labels = []
-    for sentence in test_data:
-        test_predicted_labels.append(nb.predict_sentiment(sentence))
-        
-    if output_files:
-        Evaluate(number_classes, confusion_matrix, USER_ID).save_predictions(dev_ids, dev_predicted_labels, 'dev')
-        Evaluate(number_classes, confusion_matrix, USER_ID).save_predictions(test_ids, test_predicted_labels, 'test')
+    for phrase in test_data:
+        test_predicted_labels.append(nb.predict_sentiment(phrase))
         
     
     f1_score = Evaluate(number_classes, confusion_matrix, USER_ID).evaluate_performance(dev_predicted_labels, dev_labels)
+    
+    if output_files:
+        saver = SaveOutput(number_classes, USER_ID)
+        saver.save_output(dev_ids, dev_predicted_labels, 'dev')
+        saver.save_output(test_ids, test_predicted_labels, 'test')
     
     #You need to change this in order to return your macro-F1 score for the dev set
     # f1_score = 0

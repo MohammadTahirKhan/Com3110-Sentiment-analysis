@@ -13,62 +13,63 @@ class FeatureProcesser:
         
     def process_data_with_features(self):
         processed_data_with_features = []
-        for sentence in self.data:
-            processed_sentence = self.preprocess_sentence_with_features(sentence)
-            processed_data_with_features.append(processed_sentence)
+        for phrase in self.data:
+            processed_phrase = self.preprocess_phrase_with_features(phrase)
+            processed_data_with_features.append(processed_phrase)
         return processed_data_with_features
     
-    def preprocess_sentence_with_features(self, sentence: str) -> list:
+    def preprocess_phrase_with_features(self, phrase: str) -> list:
         # translator = str.maketrans('', '', string.punctuation)
         # processed = sentence.split(" ")
         # processed = [word.lower().translate(translator) for word in processed]
-        processed = self.extract_feature(sentence)
+        processed = self.extract_feature(phrase)
         return processed
     
-    def extract_feature(self, sentence):
+    def extract_feature(self, phrase):
         
-        selected_sentence = sentence
+        selected_phrase = phrase
         for i in self.features:
             if i == 'negation':
-                selected_sentence = self.apply_negation(selected_sentence)
+                selected_phrase = self.apply_negation(selected_phrase)
             if i == 'binarization':
-                selected_sentence = self.apply_binarization(selected_sentence)
+                selected_phrase = self.apply_binarization(selected_phrase)
             # if i == 'POS':
             #     selected_sentence = self.apply_POS(selected_sentence)
-            # elif i == 'adjectives':
+            # el
+            # if i == 'adjectives':
             #     selected_sentence = self.extract_adjectives(selected_sentence)
-            # elif i == 'adverbs':
+            # if i == 'adverbs':
             #     selected_sentence = self.extract_adverbs(selected_sentence)
-            # elif i == 'nouns':
+            # if i == 'nouns':
             #     selected_sentence = self.extract_nouns(selected_sentence)
-            # elif i == 'verbs':
+            # if i == 'verbs':
             #     selected_sentence = self.extract_verbs(selected_sentence)
         
-        return selected_sentence
+        return selected_phrase
     
     
-    def apply_negation(self, sentence: list) -> list:
-        negated_sentence = []
+    def apply_negation(self, phrase: list) -> list:
+        negated_phrase = []
 
         negation_active = False
-        for w in sentence:
+        for w in phrase:
             # Toggle negation status upon encountering a negation trigger word
             if w in self.NEGATION_TRIGGER_WORDS:
                 negation_active = not negation_active
             else:
                 # If negation is active, append 'NOT_' to the word
-                negated_sentence.append(f'NOT_{w}' if negation_active else w)
+                negated_phrase.append(f'NOT_{w}' if negation_active else w)
 
-        return negated_sentence
+        return negated_phrase
         
-    def apply_binarization(self, sentence):
-        binarized_sentence = []
-        for w in sentence:
-            if w in binarized_sentence:
+    def apply_binarization(self, phrase):
+        binarized_phrase = []
+        for w in phrase:
+            if w in binarized_phrase:
                 continue
             else:
-                binarized_sentence.append(w)
-        return binarized_sentence
+                binarized_phrase.append(w)
+        return binarized_phrase
     
     # def apply_POS(self, sentence):
     #     # Tokenize the sentence and perform part-of-speech tagging
@@ -84,26 +85,35 @@ class FeatureProcesser:
 
     #     return pos_sentence
     
-    # def extract_verbs(self, sentence):
-    #     tokens = word_tokenize(' '.join(sentence))
-    #     pos_tags = pos_tag(tokens)
-    #     verbs = [word for word, pos in pos_tags if pos.startswith('VB')]
-    #     return verbs
+    def apply_POS(self, sentence):
+        tokens = word_tokenize(' '.join(sentence))  # Convert the list of words to a string
+        pos_tags = pos_tag(tokens)
+        # Extract POS tags and append them to the sentence
+        pos_tags_only = [tag for word, tag in pos_tags]
+        sentence_with_pos = sentence + [' '.join(pos_tags_only)]
+        return sentence_with_pos
+    
 
-    # def extract_adverbs(self, sentence):
-    #     tokens = word_tokenize(' '.join(sentence))
-    #     pos_tags = pos_tag(tokens)
-    #     adverbs = [word for word, pos in pos_tags if pos.startswith('RB')]
-    #     return adverbs
+    def extract_adjectives(self, sentence):
+        words = word_tokenize(sentence)
+        tagged_words = pos_tag(words)
+        adjectives = [word for word, pos in tagged_words if pos.startswith('JJ')]
+        return adjectives
 
-    # def extract_adjectives(self, sentence):
-    #     tokens = word_tokenize(' '.join(sentence))
-    #     pos_tags = pos_tag(tokens)
-    #     adjectives = [word for word, pos in pos_tags if pos.startswith('JJ')]
-    #     return adjectives
+    def extract_adverbs(self, sentence):
+        tokens = word_tokenize(sentence)
+        pos_tags = pos_tag(tokens)
+        adverbs = [word for (word, tag) in pos_tags if tag.startswith('RB') and word.lower() not in self.stop_words]
+        return adverbs
 
-    # def extract_nouns(self, sentence):
-    #     tokens = word_tokenize(' '.join(sentence))
-    #     pos_tags = pos_tag(tokens)
-    #     nouns = [word for word, pos in pos_tags if pos.startswith('NN')]
-    #     return nouns
+    def extract_nouns(self, sentence):
+        tokens = word_tokenize(sentence)
+        pos_tags = pos_tag(tokens)
+        nouns = [word for (word, tag) in pos_tags if tag.startswith('NN') and word.lower() not in self.stop_words]
+        return nouns
+
+    def extract_verbs(self, sentence):
+        tokens = word_tokenize(sentence)
+        pos_tags = pos_tag(tokens)
+        verbs = [word for (word, tag) in pos_tags if tag.startswith('VB') and word.lower() not in self.stop_words]
+        return verbs
