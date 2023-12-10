@@ -7,7 +7,7 @@ Start code.
 import argparse
 from data_preprocessor import DataPreprocessor
 from naive_bayes import NaiveBayes
-from feature_selection import FeatureSelection
+from feature_processing import FeatureProcesser
 from evaluate import Evaluate
 
 """
@@ -54,22 +54,22 @@ def main():
     ADD YOUR CODE HERE
     Create functions and classes, using the best practices of Software Engineering
     """
-    training_ids, training_data, training_labels = DataPreprocessor(number_classes).load_and_preprocess_data(training)
-    # if features == 'features':
-    #     training_data = FeatureSelection(training_data).processed_data_with_features
+    training_ids, training_data, training_labels = DataPreprocessor(number_classes).load_and_preprocess(training)
+    if features == 'features':
+        training_data = FeatureProcesser(training_data).process_data_with_features()
     nb = NaiveBayes()
     nb.train(training_data, training_labels)
     
-    dev_ids, dev_data, dev_labels = DataPreprocessor(number_classes).load_and_preprocess_data(dev)
-    # if features == 'features':
-    #     dev_data = FeatureSelection(dev_data).processed_data_with_features
+    dev_ids, dev_data, dev_labels = DataPreprocessor(number_classes).load_and_preprocess(dev)
+    if features == 'features':
+        dev_data = FeatureProcesser(dev_data).process_data_with_features()
     dev_predicted_labels = []
     for sentence in dev_data:
         dev_predicted_labels.append(nb.predict_sentiment(sentence))
     
-    test_ids, test_data, test_labels = DataPreprocessor(number_classes).load_and_preprocess_data(test)
-    # if features == 'features':
-    #     test_data = FeatureSelection(test_data).processed_data_with_features
+    test_ids, test_data, test_labels = DataPreprocessor(number_classes).load_and_preprocess(test)
+    if features == 'features':
+        test_data = FeatureProcesser(test_data).process_data_with_features()
     test_predicted_labels = []
     for sentence in test_data:
         test_predicted_labels.append(nb.predict_sentiment(sentence))

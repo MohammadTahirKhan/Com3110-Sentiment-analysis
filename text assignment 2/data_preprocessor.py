@@ -1,5 +1,8 @@
 import csv
 import string
+# import nltk
+# nltk.download('stopwords')
+from nltk.corpus import stopwords
 
 class DataPreprocessor:
     def __init__(self, num_classes):
@@ -7,14 +10,24 @@ class DataPreprocessor:
         self.CLASS_MAPPING = {0: 0, 1: 0, 2: 1, 3: 2, 4: 2}
         self.current_id = None
         # self.features = features
+        self.stop_words = stopwords.words('english')
+        self.stop_words.extend([ '\'s', '\'d', '\'ll', '\'re', '\'ve', 'n\'t', '``', '\'\'', '...', '—', '’', '“', '”', '‘', '...', '--' ])
+        self.stop_words.extend(string.punctuation.replace('!', ''))
 
-    def preprocess_sentence(self, sentence: str) -> list:
+    def preprocess(self, sentence: str) -> list:
         # processed = sentence.split(" ")
         # processed = [word.lower() for word in processed]
         # return processed
-        translator = str.maketrans('', '', string.punctuation)
+        # translator = str.maketrans('', '', string.punctuation)
         processed = sentence.split(" ")
-        processed = [word.lower().translate(translator) for word in processed]
+        # processed = [word.lower().translate(translator) for word in processed]
+        
+        # stop_words = stopwords.words('english')
+        # stop_words.extend([ '\'s', '\'d', '\'ll', '\'re', '\'ve', 'n\'t', '``', '\'\'', '...', '—', '’', '“', '”', '‘', '...', '--' ])
+        # stop_words.extend(string.punctuation.replace('!', ''))
+        
+        processed = [word.lower() for word in processed if word.lower() not in self.stop_words]
+        
         return processed
     
     # def preprocess_sentence_with_features(self, sentence: str) -> list:
@@ -25,21 +38,22 @@ class DataPreprocessor:
         
         
     #     return processed
+    
 
-    def load_and_preprocess_data(self, filename: str) -> tuple:
+    def load_and_preprocess(self, filename: str) -> tuple:
         ids = []  # sentence ids
         data = []  # sentences
         labels = []  # sentiments
 
         with open(filename) as f:
-            read = csv.reader(f, delimiter='\t')
-            next(read, None)  # skip column headings and ignore return value
-            for line in read:
+            read_data = csv.reader(f, delimiter='\t')
+            next(read_data, None)  # skip column headings and ignore return value
+            for line in read_data:
                 self.current_id = line[0]
                 sentence = line[1]
                 
                 # if self.features == 'all_words':
-                processed_sentence = self.preprocess_sentence(sentence)
+                processed_sentence = self.preprocess(sentence)
                 # else:
                 #     processed_sentence = self.preprocess_sentence_with_features(sentence)
                 
