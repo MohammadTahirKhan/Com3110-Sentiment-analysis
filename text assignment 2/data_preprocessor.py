@@ -1,7 +1,7 @@
 import csv
 import string
-# import nltk
-# nltk.download('stopwords')
+import nltk
+nltk.download('stopwords')
 from nltk.corpus import stopwords
 
 class DataPreprocessor:
@@ -11,24 +11,24 @@ class DataPreprocessor:
         self.current_id = None
         # self.features = features
         self.stop_words = stopwords.words('english')
-        self.stop_words.extend([ '\'s', '\'d', '\'ll', '\'re', '\'ve', 'n\'t', '``', '\'\'', '...', '—', '’', '“', '”', '‘', '...', '--' ])
+        self.stop_words.extend([ '\'s', '\'d', '\'ll', '\'re', '\'ve', '``', '\'\'', '...', '—', '’', '“', '”', '‘', '...', '--' ])
         self.stop_words.extend(string.punctuation.replace('!', ''))
 
-    def preprocess(self, sentence: str) -> list:
-        # processed = sentence.split(" ")
-        # processed = [word.lower() for word in processed]
-        # return processed
-        # translator = str.maketrans('', '', string.punctuation)
-        processed = sentence.split(" ")
-        # processed = [word.lower().translate(translator) for word in processed]
+    # def preprocess(self, sentence: str) -> list:
+    #     # processed = sentence.split(" ")
+    #     # processed = [word.lower() for word in processed]
+    #     # return processed
+    #     # translator = str.maketrans('', '', string.punctuation)
+    #     processed = sentence.split(" ")
+    #     # processed = [word.lower().translate(translator) for word in processed]
         
-        # stop_words = stopwords.words('english')
-        # stop_words.extend([ '\'s', '\'d', '\'ll', '\'re', '\'ve', 'n\'t', '``', '\'\'', '...', '—', '’', '“', '”', '‘', '...', '--' ])
-        # stop_words.extend(string.punctuation.replace('!', ''))
+    #     # stop_words = stopwords.words('english')
+    #     # stop_words.extend([ '\'s', '\'d', '\'ll', '\'re', '\'ve', 'n\'t', '``', '\'\'', '...', '—', '’', '“', '”', '‘', '...', '--' ])
+    #     # stop_words.extend(string.punctuation.replace('!', ''))
         
-        processed = [word.lower() for word in processed if word.lower() not in self.stop_words]
+    #     processed = [word.lower() for word in processed if word.lower() not in self.stop_words]
         
-        return processed
+    #     return processed
     
     # def preprocess_sentence_with_features(self, sentence: str) -> list:
     #     processed = sentence.split(" ")
@@ -46,14 +46,18 @@ class DataPreprocessor:
         labels = []  # sentiments
 
         with open(filename) as f:
-            read_data = csv.reader(f, delimiter='\t')
-            next(read_data, None)  # skip column headings and ignore return value
-            for line in read_data:
+            filedata = csv.reader(f, delimiter='\t')
+            next(filedata, None)  # skip column headings and ignore return value
+            for line in filedata:
                 self.current_id = line[0]
                 sentence = line[1]
                 
                 # if self.features == 'all_words':
-                processed_sentence = self.preprocess(sentence)
+                processed_sentence = sentence.split(" ")
+                processed_sentence = [word.lower() for word in processed_sentence if word.lower() not in self.stop_words]
+                
+                
+                # self.preprocess(sentence)
                 # else:
                 #     processed_sentence = self.preprocess_sentence_with_features(sentence)
                 

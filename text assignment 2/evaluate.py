@@ -1,3 +1,6 @@
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 class Evaluate:
     def __init__(self, number_classes, confusion_matrix, user_id):
         self.number_classes = number_classes
@@ -8,9 +11,15 @@ class Evaluate:
         return [[0 for _ in range(self.number_classes)] for _ in range(self.number_classes)]
 
     def print_confusion_matrix(self, confusion_matrix_counts):
-        print("Confusion matrix:")
-        for row in confusion_matrix_counts:
-            print(row)
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(confusion_matrix_counts, annot=True, fmt="d", cmap="Blues", xticklabels=True, yticklabels=True)
+        plt.xlabel("Predicted Labels")
+        plt.ylabel("Actual Labels")
+        plt.title("Confusion Matrix")
+        plt.show()
+        # print("Confusion matrix:")
+        # for row in confusion_matrix_counts:
+        #     print(row)
 
     def compute_f1_scores(self, confusion_matrix_counts):
         f1_scores = []
@@ -29,7 +38,7 @@ class Evaluate:
         confusion_matrix_counts = self.initialize_confusion_matrix()
         correct = 0
 
-        for i in range(len(predicted_labels)):
+        for i in range(len(actual_labels)):
             if predicted_labels[i] == actual_labels[i]:
                 correct += 1
 
