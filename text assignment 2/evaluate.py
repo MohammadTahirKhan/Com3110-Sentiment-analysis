@@ -17,9 +17,9 @@ class Evaluate:
         plt.ylabel("Actual Labels")
         plt.title("Confusion Matrix")
         plt.show()
-        print("Confusion matrix:")
-        for row in confusion_matrix_counts:
-            print(row)
+        # print("Confusion matrix:")
+        # for row in confusion_matrix_counts:
+        #     print(row)
 
     # def compute_f1_scores(self, confusion_matrix_counts):
     #     f1_scores = []
