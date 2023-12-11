@@ -6,13 +6,14 @@ class Evaluate:
         self.number_classes = number_classes
         self.confusion_matrix = confusion_matrix
         self.user_id = user_id
+        self.confusion_matrix_counts = []
 
     def initialize_confusion_matrix(self):
         return [[0 for _ in range(self.number_classes)] for _ in range(self.number_classes)]
 
-    def print_confusion_matrix(self, confusion_matrix_counts):
+    def print_confusion_matrix(self):
         plt.figure(figsize=(8, 6))
-        sns.heatmap(confusion_matrix_counts, annot=True, fmt="d", cmap="Blues", xticklabels=True, yticklabels=True)
+        sns.heatmap(self.confusion_matrix_counts, annot=True, fmt="d", cmap="Blues", xticklabels=True, yticklabels=True)
         plt.xlabel("Predicted Labels")
         plt.ylabel("Actual Labels")
         plt.title("Confusion Matrix")
@@ -65,19 +66,19 @@ class Evaluate:
         return f1_scores
 
     def evaluate_performance(self, predicted_labels: list, actual_labels: list) -> float:
-        confusion_matrix_counts = self.initialize_confusion_matrix()
+        self.confusion_matrix_counts = self.initialize_confusion_matrix()
         correct = 0
 
         for i in range(len(actual_labels)):
             if predicted_labels[i] == actual_labels[i]:
                 correct += 1
 
-            confusion_matrix_counts[actual_labels[i]][predicted_labels[i]] += 1
+            self.confusion_matrix_counts[actual_labels[i]][predicted_labels[i]] += 1
 
-        if self.confusion_matrix:
-            self.print_confusion_matrix(confusion_matrix_counts)
+        # if self.confusion_matrix:
+        #     self.print_confusion_matrix(confusion_matrix_counts)
 
-        f1_scores = self.compute_f1_scores(confusion_matrix_counts)
+        f1_scores = self.compute_f1_scores(self.confusion_matrix_counts)
         return sum(f1_scores) / len(f1_scores)
 
     # def save_predictions(self, sentence_ids: list, predicted_labels: list, dataset_name: str) -> None:

@@ -6,7 +6,7 @@ from nltk.tokenize import word_tokenize
 
 class FeatureProcesser:
     def __init__(self, data):
-        self.features = ['negation', 'binarization', 'POS', 'adjectives', 'adverbs', 'nouns', 'verbs']
+        self.features = ['negation', 'binarization', 'POS']
         self.data = data
         self.NEGATION_TRIGGER_WORDS = ['not', 'no', 'never', 'none', 'nothing', 'neither', 'nor', 'rarley', 'seldom', 'hardly', 'scarcely', 'barely', 'n\'t']
         
