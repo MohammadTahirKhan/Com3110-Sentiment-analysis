@@ -6,7 +6,7 @@ Start code.
 """
 import argparse
 from data_preprocessor import DataPreprocessor
-from naive_bayes import NaiveBayes
+from naive_bayes_classifier import NaiveBayesClassifier
 from feature_processing import FeatureProcesser
 from evaluate import Evaluate
 from save_output import SaveOutput
@@ -56,25 +56,25 @@ def main():
     Create functions and classes, using the best practices of Software Engineering
     """
     data_preprocessor = DataPreprocessor(number_classes)
-    training_ids, training_data, training_labels = data_preprocessor.load_and_preprocess(training)
+    training_ids, training_data, training_labels = data_preprocessor.preprocess(training)
     if features == 'features':
         training_data = FeatureProcesser(training_data).process_data_with_features()
-    naive_bayes = NaiveBayes()
-    naive_bayes.train(training_data, training_labels)
+    classifier = NaiveBayesClassifier()
+    classifier.train(training_data, training_labels)
     
-    dev_ids, dev_data, dev_labels = data_preprocessor.load_and_preprocess(dev)
+    dev_ids, dev_data, dev_labels = data_preprocessor.preprocess(dev)
     if features == 'features':
         dev_data = FeatureProcesser(dev_data).process_data_with_features()
     dev_predicted_labels = []
     for phrase in dev_data:
-        dev_predicted_labels.append(naive_bayes.predict_sentiment(phrase))
+        dev_predicted_labels.append(classifier.predict_sentiment(phrase))
     
-    test_ids, test_data, test_labels = data_preprocessor.load_and_preprocess(test)
+    test_ids, test_data, test_labels = data_preprocessor.preprocess(test)
     if features == 'features':
         test_data = FeatureProcesser(test_data).process_data_with_features()
     test_predicted_labels = []
     for phrase in test_data:
-        test_predicted_labels.append(naive_bayes.predict_sentiment(phrase))
+        test_predicted_labels.append(classifier.predict_sentiment(phrase))
         
     evaluator = Evaluate(number_classes, confusion_matrix, USER_ID)
     f1_score = evaluator.evaluate_performance(dev_predicted_labels, dev_labels)

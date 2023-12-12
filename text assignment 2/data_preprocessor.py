@@ -13,11 +13,13 @@ class DataPreprocessor:
         self.stop_words.update(['\'s', '\'d', '\'ll', '\'re', '\'ve', '``', '\'\'', '...', '—', '’', '“', '”', '‘', '...', '--'])
         self.stop_words.update(set(string.punctuation.replace('!', '')))
 
-    def load_and_preprocess(self, filename: str) -> tuple:
+    def preprocess(self, filename: str) -> tuple:
+        # load data from file
         df = pd.read_csv(filename, sep='\t', header=0)
 
         ids = df['SentenceId'].tolist()
         data = []
+        # preprocessing
         for phrase in df['Phrase'].tolist():
             processed_phrase = phrase.split(" ")
             processed_phrase = [word.lower() for word in processed_phrase if word.lower() not in self.stop_words]
