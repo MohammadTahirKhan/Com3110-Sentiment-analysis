@@ -1,7 +1,7 @@
 import pandas as pd
 import string
-# import nltk
-# nltk.download('stopwords')
+import nltk
+nltk.download('stopwords')
 from nltk.corpus import stopwords
 
 class DataPreprocessor:

@@ -1,6 +1,6 @@
-# import nltk
-# nltk.download('punkt')
-# nltk.download('averaged_perceptron_tagger')
+import nltk
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
 from nltk import pos_tag
 from nltk.tokenize import word_tokenize
 
