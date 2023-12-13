@@ -9,12 +9,8 @@ from data_preprocessor import DataPreprocessor
 from naive_bayes_classifier import NaiveBayesClassifier
 from feature_processing import FeatureProcesser
 from evaluate import Evaluate
-from save_output import SaveOutput
 
-"""
-IMPORTANT, modify this part with your details
-"""
-USER_ID = "aca21mtk" #your unique student ID, i.e. the IDs starting with "acp", "mm" etc that you use to login into MUSE 
+USER_ID = "aca21mtk" #unique student ID, i.e. the IDs starting with "acp", "mm" etc that you use to login into MUSE 
 
 def parse_args():
     parser=argparse.ArgumentParser(description="A Naive Bayes Sentiment Analyser for the Rotten Tomatoes Movie Reviews dataset")
@@ -51,10 +47,6 @@ def main():
     #whether to print confusion matrix (default = no confusion matrix)
     confusion_matrix = inputs.confusion_matrix
     
-    """
-    ADD YOUR CODE HERE
-    Create functions and classes, using the best practices of Software Engineering
-    """
     data_preprocessor = DataPreprocessor(number_classes)
     training_ids, training_data, training_labels = data_preprocessor.preprocess(training)
     if features == 'features':
@@ -76,22 +68,14 @@ def main():
     for phrase in test_data:
         test_predicted_labels.append(classifier.predict_sentiment(phrase))
         
+    if output_files:
+        # save output to files
+        classifier.save_output(USER_ID, dev_ids, dev_predicted_labels, 'dev')
+        classifier.save_output(USER_ID, test_ids, test_predicted_labels, 'test')
+        
     evaluator = Evaluate(number_classes, confusion_matrix, USER_ID)
     f1_score = evaluator.evaluate_performance(dev_predicted_labels, dev_labels)
     
-    if output_files:
-        saver = SaveOutput(number_classes, USER_ID)
-        saver.save_output(dev_ids, dev_predicted_labels, 'dev')
-        saver.save_output(test_ids, test_predicted_labels, 'test')
-    
-    #You need to change this in order to return your macro-F1 score for the dev set
-    # f1_score = 0
-    
-
-    """
-    IMPORTANT: your code should return the lines below. 
-    However, make sure you are also implementing a function to save the class predictions on dev and test sets as specified in the assignment handout
-    """
     #print("Student\tNumber of classes\tFeatures\tmacro-F1(dev)\tAccuracy(dev)")
     print("%s\t%d\t%s\t%f" % (USER_ID, number_classes, features, f1_score))
     

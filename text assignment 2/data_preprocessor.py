@@ -1,11 +1,21 @@
 import pandas as pd
 import string
 import nltk
-nltk.download('stopwords')
+nltk.download('stopwords', quiet=True)
 from nltk.corpus import stopwords
 
 class DataPreprocessor:
+    """
+    Data preprocessor for sentiment analysis
+    """
+    
     def __init__(self, num_classes):
+        """
+        Initialize data preprocessor
+
+        Args:
+            num_classes (int): number of classes
+        """
         self.num_classes = num_classes
         self.CLASS_MAPPING = {0: 0, 1: 0, 2: 1, 3: 2, 4: 2}
         self.current_id = None
@@ -13,7 +23,18 @@ class DataPreprocessor:
         self.stop_words.update(['\'s', '\'d', '\'ll', '\'re', '\'ve', '``', '\'\'', '...', '—', '’', '“', '”', '‘', '...', '--'])
         self.stop_words.update(set(string.punctuation.replace('!', '')))
 
-    def preprocess(self, filename: str) -> tuple:
+    def preprocess(self, filename):
+        """ 
+        Load and preprocess data from file
+
+        Args:
+            filename (str): name of file to load data from
+
+        Returns:
+            ids (list): list of sentence ids
+            data (list): list of preprocessed phrases
+            labels (list): list of sentiment labels
+        """
         # load data from file
         df = pd.read_csv(filename, sep='\t', header=0)
 

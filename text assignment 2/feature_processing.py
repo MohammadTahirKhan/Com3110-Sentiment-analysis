@@ -1,52 +1,64 @@
 import nltk
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
+nltk.download('punkt',  quiet=True)
+nltk.download('averaged_perceptron_tagger', quiet=True)
 from nltk import pos_tag
 from nltk.tokenize import word_tokenize
 
 class FeatureProcesser:
+    """
+    Feature processer for sentiment analysis
+    """
+    
     def __init__(self, data):
-        self.features = ['negation', 'binarization', 'POS']
+        """
+        Initialize feature processer
+
+        Args:
+            data: list of phrases
+        """
         self.data = data
-        self.NEGATION_TRIGGER_WORDS = ['not', 'no', 'never', 'none', 'nothing', 'neither', 'nor', 'rarley', 'seldom', 'hardly', 'scarcely', 'barely', 'n\'t']
+        self.NEGATION_TRIGGER_WORDS = ['not', 'no', 'never', 'none', 'nothing', 'neither', 'nor', 'nobody', 'n\'t']
         
     def process_data_with_features(self):
+        """
+        Process data with features
+
+        Returns:
+            processed_data_with_features: list of processed phrases with features
+        """
         processed_data_with_features = []
         for phrase in self.data:
-            processed_phrase = self.preprocess_phrase_with_features(phrase)
+            processed_phrase = self.extract_feature(phrase)
             processed_data_with_features.append(processed_phrase)
         return processed_data_with_features
     
-    def preprocess_phrase_with_features(self, phrase: str) -> list:
-        processed = self.extract_feature(phrase)
-        return processed
-    
     def extract_feature(self, phrase):
-        selected_phrase = phrase
-        # tokens = word_tokenize(' '.join(selected_phrase))
-        # pos_tags = pos_tag(tokens)
+        """
+        Extract features from phrase
+
+        Args:
+            phrase: list of words in phrase
+
+        Returns:
+            phrase: list of words in phrase with features
+        """
+        binarized_phrase = self.apply_binarization(phrase)
+        phrase = self.apply_negation(binarized_phrase)
+        tokens = word_tokenize(' '.join(binarized_phrase))
+        pos_tags = pos_tag(tokens)
+        phrase += self.apply_POS(pos_tags)
+        return phrase
+    
+    def apply_negation(self, phrase):
+        """
+        Apply negation to phrase
         
-        for i in self.features:
-            # if i == 'negation':
-            #     selected_phrase = self.apply_negation(selected_phrase)
-            if i == 'POS':
-                tokens = word_tokenize(' '.join(selected_phrase))
-                pos_tags = pos_tag(tokens)
-                selected_phrase += self.apply_POS(pos_tags)
-            # if i == 'adjectives':
-            #     selected_phrase += self.extract_adjectives(pos_tags)
-            # if i == 'adverbs':
-            #     selected_phrase += self.extract_adverbs(pos_tags)
-            # if i == 'nouns':
-            #     selected_phrase += self.extract_nouns(pos_tags)
-            # if i == 'verbs':
-            #     selected_phrase += self.extract_verbs(pos_tags)
-            if i == 'binarization':
-                selected_phrase = self.apply_binarization(selected_phrase)
-        return selected_phrase
-    
-    
-    def apply_negation(self, phrase: list) -> list:
+        Args:
+            phrase: list of words in phrase
+
+        Returns:
+            negated_phrase: list of words in phrase with negation applied
+        """
         negated_phrase = []
 
         negation_active = False
@@ -56,11 +68,24 @@ class FeatureProcesser:
                 negation_active = not negation_active
             else:
                 # If negation is active, append 'NOT_' to the word
-                negated_phrase.append(f'NOT_{w}' if negation_active else w)
+                if negation_active:
+                    negated_phrase.append(f'NOT_{w}')
+                    negation_active = False
+                else:
+                    negated_phrase.append(w)
 
         return negated_phrase
         
     def apply_binarization(self, phrase):
+        """
+        Apply binarization to phrase
+
+        Args:
+            phrase: list of words in phrase
+
+        Returns:
+            binarized_phrase: list of words in phrase with binarization applied
+        """
         binarized_phrase = []
         for w in phrase:
             if w in binarized_phrase:
@@ -69,15 +94,16 @@ class FeatureProcesser:
                 binarized_phrase.append(w)
         return binarized_phrase
     
-    # def apply_POS(self, pos_tags):
-    #     # Extract POS tags and append them to the sentence
-    #     pos_tags_only = [tag for word, tag in pos_tags]
-    #     sentence_with_pos = sentence + [' '.join(pos_tags_only)]
-    #     return sentence_with_pos
-    
     def apply_POS(self, pos_tags):
-        # tokens = word_tokenize(' '.join(sentence))
-        # pos_tags = pos_tag(tokens)
+        """
+        Apply POS, extract adjectives, adverbs, nouns and verbs from phrase
+
+        Args:
+            pos_tags: list of POS tags
+
+        Returns:
+            pos_tags_words: list of adjectives, adverbs, nouns and verbs in phrase
+        """
         adjectives = [word for word, pos in pos_tags if pos.startswith('JJ')]
         adverbs = [word for (word, tag) in pos_tags if tag.startswith('RB')]
         nouns = [word for (word, tag) in pos_tags if tag.startswith('NN')]
@@ -85,26 +111,4 @@ class FeatureProcesser:
         pos_tags_words = adjectives + adverbs + nouns + verbs
         return pos_tags_words
     
-    # def extract_adjectives(self, pos_tags):
-    #     # words = word_tokenize(' '.join(sentence))
-    #     # tagged_words = pos_tag(words)
-    #     adjectives = [word for word, pos in pos_tags if pos.startswith('JJ')]
-    #     return adjectives
-
-    # def extract_adverbs(self, pos_tags):
-    #     # tokens = word_tokenize(' '.join(sentence))
-    #     # pos_tags = pos_tag(tokens)
-    #     adverbs = [word for (word, tag) in pos_tags if tag.startswith('RB')]
-    #     return adverbs
-
-    # def extract_nouns(self, pos_tags):
-    #     # tokens = word_tokenize(' '.join(sentence))
-    #     # pos_tags = pos_tag(tokens)
-    #     nouns = [word for (word, tag) in pos_tags if tag.startswith('NN')]
-    #     return nouns
-
-    # def extract_verbs(self, pos_tags):
-    #     # tokens = word_tokenize(' '.join(sentence))
-    #     # pos_tags = pos_tag(tokens)
-    #     verbs = [word for (word, tag) in pos_tags if tag.startswith('VB')]
-    #     return verbs
+ 
