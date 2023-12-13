@@ -18,9 +18,13 @@ class DataPreprocessor:
         """
         self.num_classes = num_classes
         self.CLASS_MAPPING = {0: 0, 1: 0, 2: 1, 3: 2, 4: 2}
-        self.current_id = None
         self.stop_words = set(stopwords.words('english'))
+        # removing negation words from stop words
+        self.stop_words.remove('not')
+        self.stop_words.remove('no')
+        self.stop_words.remove('nor')
         self.stop_words.update(['\'s', '\'d', '\'ll', '\'re', '\'ve', '``', '\'\'', '...', '—', '’', '“', '”', '‘', '...', '--'])
+        # adding punctuation to stop words
         self.stop_words.update(set(string.punctuation.replace('!', '')))
 
     def preprocess(self, filename):
