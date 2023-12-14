@@ -26,14 +26,14 @@ python NB_sentiment_analyser.py <TRAINING_FILE> <DEV_FILE> <TEST_FILE> -classes 
 ``` 
 
 where:
-• <TRAINING_FILE> <DEV_FILE> <TEST_FILE> are the paths to the training, dev and
+1. <TRAINING_FILE> <DEV_FILE> <TEST_FILE> are the paths to the training, dev and
 test files, respectively;
-• -classes <NUMBER_CLASSES> should be either 3 or 5, i.e. the number of classes being
+2. -classes <NUMBER_CLASSES> should be either 3 or 5, i.e. the number of classes being
 predicted;
-• -features is a parameter to define whether you are using your selected features or
+3. -features is a parameter to define whether you are using your selected features or
 no features (i.e. all words);
-• -output_files is an optional value defining whether or not the prediction files should
+4. -output_files is an optional value defining whether or not the prediction files should
 be saved (see below – default is "files are not saved"); and
-• -confusion_matrix is an optional value defining whether confusion matrices should
+5. -confusion_matrix is an optional value defining whether confusion matrices should
 be shown (default is "confusion matrices are not shown").
 
