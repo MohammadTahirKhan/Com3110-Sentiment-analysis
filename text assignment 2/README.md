@@ -33,7 +33,7 @@ predicted;
 3. -features is a parameter to define whether you are using your selected features or
 no features (i.e. all words);
 4. -output_files is an optional value defining whether or not the prediction files should
-be saved (see below – default is "files are not saved"); and
+be saved (default is "files are not saved");
 5. -confusion_matrix is an optional value defining whether confusion matrices should
 be shown (default is "confusion matrices are not shown").
 
