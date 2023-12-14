@@ -4,14 +4,14 @@ nltk.download('averaged_perceptron_tagger', quiet=True)
 from nltk import pos_tag
 from nltk.tokenize import word_tokenize
 
-class FeatureProcesser:
+class FeatureProcessor:
     """
-    Feature processer for sentiment analysis
+    Feature processor for sentiment analysis
     """
     
     def __init__(self, data):
         """
-        Initialize feature processer
+        Initialize feature processor
 
         Args:
             data: list of phrases

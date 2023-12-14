@@ -7,7 +7,7 @@ Start code.
 import argparse
 from data_preprocessor import DataPreprocessor
 from naive_bayes_classifier import NaiveBayesClassifier
-from feature_processing import FeatureProcesser
+from feature_processing import FeatureProcessor
 from evaluate import Evaluate
 
 USER_ID = "aca21mtk" #unique student ID, i.e. the IDs starting with "acp", "mm" etc that you use to login into MUSE 
@@ -50,20 +50,20 @@ def main():
     data_preprocessor = DataPreprocessor(number_classes)
     training_ids, training_data, training_labels = data_preprocessor.preprocess(training)
     if features == 'features':
-        training_data = FeatureProcesser(training_data).process_data_with_features()
+        training_data = FeatureProcessor(training_data).process_data_with_features()
     classifier = NaiveBayesClassifier()
     classifier.train(training_data, training_labels)
     
     dev_ids, dev_data, dev_labels = data_preprocessor.preprocess(dev)
     if features == 'features':
-        dev_data = FeatureProcesser(dev_data).process_data_with_features()
+        dev_data = FeatureProcessor(dev_data).process_data_with_features()
     dev_predicted_labels = []
     for phrase in dev_data:
         dev_predicted_labels.append(classifier.predict_sentiment(phrase))
     
     test_ids, test_data, test_labels = data_preprocessor.preprocess(test)
     if features == 'features':
-        test_data = FeatureProcesser(test_data).process_data_with_features()
+        test_data = FeatureProcessor(test_data).process_data_with_features()
     test_predicted_labels = []
     for phrase in test_data:
         test_predicted_labels.append(classifier.predict_sentiment(phrase))
