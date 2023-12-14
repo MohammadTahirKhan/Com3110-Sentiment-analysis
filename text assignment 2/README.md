@@ -5,7 +5,7 @@
 - Python 3.9 or higher
 - pip
 
-## Python Libraries
+### Python Libraries
 - pandas
 - nltk
 - seaborn
@@ -13,7 +13,7 @@
 
 These are the main libraries used in the project. Dependencies for these can be automatically installed using pip. 'Stopwords', 'averaged_perceptron_tagger', and 'punkt' are also required from the nltk library. These will be automatically downloaded when the program is run. 
 
-# Setup
+## Setup
 1. Extract the zip file to a folder of your choice.
 2. Open a terminal window in the folder containing the extracted files.
 3. Run the following command to install the required libraries:
